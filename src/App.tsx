@@ -5,6 +5,7 @@ import {
   Camera,
   Check,
   ChevronDown,
+  ChevronUp,
   FolderUp,
   Linkedin,
   LoaderCircle,
@@ -50,6 +51,8 @@ function App() {
   const [uploading, setUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState('');
   const [lightboxItem, setLightboxItem] = useState<MediaItem | null>(null);
+  const [scrollPos, setScrollPos] = useState(0);
+  const [scrollHeight, setScrollHeight] = useState(1);
 
   useEffect(() => {
     void loadMedia();
@@ -68,6 +71,16 @@ function App() {
 
     revealItems.forEach((item) => observer.observe(item));
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    function handleScroll(): void {
+      setScrollPos(window.scrollY);
+      setScrollHeight(document.documentElement.scrollHeight - window.innerHeight);
+    }
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   async function loadMedia(): Promise<void> {
@@ -155,9 +168,9 @@ function App() {
   return (
     <main>
       <nav className="site-nav" aria-label="Main navigation">
-        <a href="#top" className="wordmark" onClick={() => setMenuOpen(false)}>
+        <button type="button" className="wordmark" aria-label="Back to top" onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setMenuOpen(false); }}>
           <span>FB</span>
-        </a>
+        </button>
         <button className="menu-toggle" type="button" aria-label="Toggle navigation" onClick={() => setMenuOpen((open) => !open)}>
           {menuOpen ? <X size={21} /> : <Menu size={21} />}
         </button>
@@ -236,6 +249,11 @@ function App() {
         <div className="connect-bottom"><p className="display-large">Let&apos;s make<br /><em>something matter.</em></p><div className="contact-panel"><a className="email-link" href="mailto:fbraimah@ualberta.ca">fbraimah@ualberta.ca <ArrowUpRight size={22} /></a><div className="contact-actions"><a href="https://www.linkedin.com/in/frances-braimah?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noreferrer"><Linkedin size={17} /> LinkedIn</a><a href="https://wa.me/17809947419" target="_blank" rel="noreferrer"><MessageCircle size={17} /> WhatsApp · Canada</a><a href="https://wa.me/233504293473" target="_blank" rel="noreferrer"><MessageCircle size={17} /> WhatsApp · Ghana</a></div></div></div>
         <footer><span>Frances Braimah © 2026</span><span className="footer-center">Built with purpose.</span><div className="social-links"><a href="https://www.linkedin.com/in/frances-braimah?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={18} /></a><a href="https://wa.me/17809947419" target="_blank" rel="noreferrer" aria-label="WhatsApp Canada"><MessageCircle size={18} /></a><a href="mailto:fbraimah@ualberta.ca" aria-label="Email Frances"><ArrowUpRight size={18} /></a></div></footer>
       </section>
+
+      <div className="scroll-nav" aria-label="Scroll navigation">
+        <button type="button" className={`scroll-btn scroll-up ${scrollPos > 400 ? 'is-visible' : ''}`} aria-label="Back to top" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}><ChevronUp size={20} /></button>
+        <button type="button" className={`scroll-btn scroll-down ${scrollPos < scrollHeight - 400 ? 'is-visible' : ''}`} aria-label="Skip to bottom" onClick={() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })}><ChevronDown size={20} /></button>
+      </div>
 
       {lightboxItem && <div className="lightbox" role="dialog" aria-modal="true" aria-label="Media viewer" onClick={() => setLightboxItem(null)}><button className="close-lightbox" type="button" aria-label="Close media viewer" onClick={() => setLightboxItem(null)}><X size={22} /></button><div className="lightbox-content" onClick={(event) => event.stopPropagation()}>{lightboxItem.media_type === 'video' ? <video src={publicUrl(lightboxItem)} controls autoPlay /> : <img src={publicUrl(lightboxItem)} alt={lightboxItem.file_name} />}<div className="lightbox-footer"><span>{lightboxItem.file_name}</span><button type="button" onClick={() => void handleDelete(lightboxItem)}><Trash2 size={16} /> Remove</button></div></div></div>}
     </main>

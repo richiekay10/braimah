@@ -126,6 +126,15 @@ footer { padding:22px 0 30px; border-top:1px solid var(--line); display:flex; al
 .spin { animation:spin 1s linear infinite; }
 @keyframes spin { to { transform:rotate(360deg); } }
 
+.wordmark { cursor:pointer; transition:transform .25s ease; }
+.wordmark:hover { transform:scale(1.08); }
+.wordmark:hover span { background:var(--ink); color:var(--paper); }
+.scroll-nav { position:fixed; right:24px; bottom:24px; z-index:15; display:flex; flex-direction:column; gap:10px; }
+.scroll-btn { width:46px; height:46px; display:grid; place-items:center; border:1px solid rgba(255,247,240,.4); border-radius:50%; background:rgba(169,31,43,.92); color:var(--ink); cursor:pointer; opacity:0; transform:scale(.7) translateY(10px); pointer-events:none; transition:opacity .3s ease, transform .3s ease, background .25s; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+.scroll-btn.is-visible { opacity:1; transform:scale(1) translateY(0); pointer-events:auto; }
+.scroll-btn:hover { background:var(--ink); color:var(--paper); border-color:var(--ink); transform:scale(1.1); }
+.scroll-btn:active { transform:scale(.95); }
+
 .hero-intro, .about-copy, .focus-note, .journey-item p, .connect-note { color:rgba(255,247,240,.78); }
 .eyebrow-dot { background:var(--blue-dark); }
 .hero-portrait-frame { border-color:var(--blue-dark); }
@@ -143,7 +152,8 @@ footer { padding:22px 0 30px; border-top:1px solid var(--line); display:flex; al
 .social-links button:hover { color:var(--blue-dark); }
 .toast { position:fixed; z-index:30; right:24px; bottom:24px; display:flex; align-items:center; gap:8px; padding:13px 16px; color:var(--paper); background:var(--ink); font:11px var(--mono); box-shadow:0 12px 30px rgba(0,0,0,.18); }
 @media (max-width:800px) { .site-nav { height:75px; padding:0 7vw; } .menu-toggle { display:block; z-index:2; } .nav-links { display:none; position:absolute; inset:0; top:0; height:100vh; background:var(--paper); flex-direction:column; justify-content:center; gap:26px; font-size:18px; } .nav-links-open { display:flex; } .nav-contact { font-size:13px; } .hero { grid-template-columns:1fr; min-height:auto; padding-top:145px; padding-bottom:100px; gap:70px; } .hero-copy { padding:0; } h1 { font-size:clamp(66px, 18vw, 110px); } .hero-portrait-wrap { justify-self:center; width:min(78vw, 370px); } .hero-stamp { right:4%; bottom:4%; } .scroll-cue { display:none; } .about-section, .focus-section, .connect-section { padding-top:95px; padding-bottom:105px; } .about-grid, .journey-grid { grid-template-columns:1fr; gap:48px; padding-top:45px; } .statement-band { padding:75px 0; } .statement-inner { grid-template-columns:42px 1fr; gap:12px; } .quote-mark { font-size:75px; } .quote-credit { grid-column:2; } .focus-header, .gallery-header, .connect-top, .connect-bottom { display:block; } .focus-note, .connect-note { margin:25px 0 0; } .focus-list { margin-top:55px; } .focus-item { grid-template-columns:35px 1fr 25px; gap:12px; padding:18px 0; } .focus-item p { grid-column:2; } .focus-item h3 { font-size:21px; } .gallery-section { padding:80px 0 90px; } .gallery-header { padding-top:45px; } .upload-button { margin-top:32px; width:max-content; } .gallery-grid { grid-template-columns:repeat(2, 1fr); margin-top:30px; } .media-card { height:190px; } .connect-bottom { padding:70px 0 90px; } .email-link { width:max-content; max-width:100%; font-size:11px; margin-top:36px; } footer { gap:18px; flex-wrap:wrap; } .footer-center { order:3; width:100%; } }
-@media (max-width:440px) { .wordmark small { display:none; } .gallery-grid { grid-template-columns:1fr; } .media-card { height:260px; } .hero-portrait-wrap { width:82vw; } }
-@media (max-width:800px) { .contact-panel { margin-top:36px; } }
+@media (max-width:440px) { .wordmark small { display:none; } .gallery-grid { grid-template-columns:1fr; } .media-card { height:260px; } .hero-portrait-wrap { width:82vw; } .hero-name { font-size:13px; letter-spacing:.1em; } .scroll-nav { right:16px; bottom:16px; } .scroll-btn { width:42px; height:42px; } .focus-item h3 { font-size:18px; } .about-copy .lead { font-size:18px; } .connect-bottom .display-large { font-size:clamp(48px, 13vw, 80px); } }
+@media (max-width:800px) { .contact-panel { margin-top:36px; } .statement-inner p { font-size:clamp(22px, 6vw, 40px); } .focus-item { min-height:auto; } .journey-item { grid-template-columns:50px 1fr 18px; gap:14px; } .hero-name { font-size:13px; } .eyebrow { margin-bottom:22px; } .hero { padding-top:120px; } .gallery-header { flex-direction:column; align-items:flex-start; gap:24px; } .upload-button { width:max-content; } .connect-top { flex-direction:column; gap:18px; } .connect-bottom { flex-direction:column; gap:48px; align-items:flex-start; } }
+@media (max-width:380px) { .hero-stamp { width:78px; height:78px; font-size:8px; } h1 { font-size:clamp(54px, 16vw, 90px); } }
 .lightbox .close-lightbox, .lightbox .lightbox-footer { color:var(--ink); }
 

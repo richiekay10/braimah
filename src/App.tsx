@@ -26,10 +26,9 @@ type MediaItem = {
   created_at: string;
 };
 
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY,
-);
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
 const focusAreas = [
   { number: '01', title: 'Transportation', text: 'Designing movement systems that connect people to opportunity.' },
@@ -73,6 +72,12 @@ function App() {
 
   async function loadMedia(): Promise<void> {
     setLoadingMedia(true);
+    if (!supabase) {
+      setMedia([]);
+      setLoadingMedia(false);
+      return;
+    }
+
     const { data } = await supabase
       .from('portfolio_media')
       .select('id, file_name, storage_path, media_type, created_at')
@@ -85,6 +90,10 @@ function App() {
     const files = Array.from(event.target.files ?? []);
     event.target.value = '';
     if (!files.length) return;
+    if (!supabase) {
+      setUploadMessage('The gallery is temporarily unavailable. Please try again later.');
+      return;
+    }
 
     const invalidFile = files.find((file) => file.size > 50 * 1024 * 1024);
     if (invalidFile) {
@@ -129,6 +138,7 @@ function App() {
   }
 
   async function handleDelete(item: MediaItem): Promise<void> {
+    if (!supabase) return;
     const { error: storageError } = await supabase.storage.from('portfolio-media').remove([item.storage_path]);
     if (storageError) return;
     await supabase.from('portfolio_media').delete().eq('id', item.id);
@@ -137,7 +147,7 @@ function App() {
   }
 
   function publicUrl(item: MediaItem): string {
-    return supabase.storage.from('portfolio-media').getPublicUrl(item.storage_path).data.publicUrl;
+    return supabase?.storage.from('portfolio-media').getPublicUrl(item.storage_path).data.publicUrl ?? '';
   }
 
   const featuredMedia = useMemo(() => media.slice(0, 6), [media]);

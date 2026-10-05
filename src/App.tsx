@@ -172,6 +172,13 @@ function App() {
       <section className="hero" id="top">
         <div className="hero-copy">
           <p className="eyebrow"><span className="eyebrow-dot" /> Civil + Environmental Engineering</p>
+          <p className="hero-name" aria-label="Frances Braimah">
+            {Array.from('Frances Braimah').map((char, i) => (
+              <span key={i} className="name-letter" style={{ animationDelay: `${0.15 + i * 0.045}s` }}>
+                {char === ' ' ? '\u00A0' : char}
+              </span>
+            ))}
+          </p>
           <h1>Building with<br /><em>intention.</em></h1>
           <p className="hero-intro">Frances Braimah is a fourth-year engineering student at the University of Alberta, curious about the systems that make a better world possible.</p>
           <a className="text-link" href="#about">Get to know me <ArrowDownRight size={17} /></a>

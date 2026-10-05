@@ -53,6 +53,7 @@ function App() {
   const [lightboxItem, setLightboxItem] = useState<MediaItem | null>(null);
   const [scrollPos, setScrollPos] = useState(0);
   const [scrollHeight, setScrollHeight] = useState(1);
+  const [navScrolled, setNavScrolled] = useState(false);
 
   useEffect(() => {
     void loadMedia();
@@ -77,6 +78,7 @@ function App() {
     function handleScroll(): void {
       setScrollPos(window.scrollY);
       setScrollHeight(document.documentElement.scrollHeight - window.innerHeight);
+      setNavScrolled(window.scrollY > 60);
     }
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -167,7 +169,7 @@ function App() {
 
   return (
     <main>
-      <nav className="site-nav" aria-label="Main navigation">
+      <nav className={`site-nav ${navScrolled ? 'is-scrolled' : ''}`} aria-label="Main navigation">
         <button type="button" className="wordmark" aria-label="Back to top" onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setMenuOpen(false); }}>
           <span>FB</span>
         </button>

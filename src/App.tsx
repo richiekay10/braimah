@@ -52,6 +52,7 @@ function App() {
   const [uploading, setUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState('');
   const [lightboxItem, setLightboxItem] = useState<MediaItem | null>(null);
+  const [toast, setToast] = useState('');
 
   useEffect(() => {
     void loadMedia();
@@ -124,6 +125,11 @@ function App() {
 
   function publicUrl(item: MediaItem): string {
     return supabase.storage.from('portfolio-media').getPublicUrl(item.storage_path).data.publicUrl;
+  }
+
+  function showToast(message: string): void {
+    setToast(message);
+    window.setTimeout(() => setToast(''), 2800);
   }
 
   const featuredMedia = useMemo(() => media.slice(0, 6), [media]);
@@ -204,10 +210,11 @@ function App() {
       <section className="connect-section section-shell" id="connect">
         <div className="connect-top"><div className="section-kicker"><span>05</span><span>Open to possibility</span></div><p className="connect-note">Whether you want to talk engineering, sustainability, design, or the next big question — I&apos;d love to hear from you.</p></div>
         <div className="connect-bottom"><p className="display-large">Let&apos;s make<br /><em>something matter.</em></p><a className="email-link" href="mailto:frances.braimah@example.com">frances.braimah@example.com <ArrowUpRight size={22} /></a></div>
-        <footer><span>Frances Braimah © 2026</span><span className="footer-center">Built with purpose.</span><div className="social-links"><a href="#connect" aria-label="LinkedIn"><Linkedin size={18} /></a><a href="#connect" aria-label="Instagram"><Instagram size={18} /></a><a href="#connect" aria-label="GitHub"><Github size={18} /></a></div></footer>
+        <footer><span>Frances Braimah © 2026</span><span className="footer-center">Built with purpose.</span><div className="social-links"><button type="button" aria-label="LinkedIn" onClick={() => showToast('LinkedIn profile coming soon.') }><Linkedin size={18} /></button><button type="button" aria-label="Instagram" onClick={() => showToast('Instagram profile coming soon.') }><Instagram size={18} /></button><button type="button" aria-label="GitHub" onClick={() => showToast('GitHub profile coming soon.') }><Github size={18} /></button></div></footer>
       </section>
 
       {lightboxItem && <div className="lightbox" role="dialog" aria-modal="true" aria-label="Media viewer" onClick={() => setLightboxItem(null)}><button className="close-lightbox" type="button" aria-label="Close media viewer" onClick={() => setLightboxItem(null)}><X size={22} /></button><div className="lightbox-content" onClick={(event) => event.stopPropagation()}>{lightboxItem.media_type === 'video' ? <video src={publicUrl(lightboxItem)} controls autoPlay /> : <img src={publicUrl(lightboxItem)} alt={lightboxItem.file_name} />}<div className="lightbox-footer"><span>{lightboxItem.file_name}</span><button type="button" onClick={() => void handleDelete(lightboxItem)}><Trash2 size={16} /> Remove</button></div></div></div>}
+      {toast && <div className="toast" role="status"><Check size={15} />{toast}</div>}
     </main>
   );
 }

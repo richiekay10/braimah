@@ -6,11 +6,10 @@ import {
   Check,
   ChevronDown,
   FolderUp,
-  Github,
-  Instagram,
   Linkedin,
   LoaderCircle,
   Menu,
+  MessageCircle,
   MoveUpRight,
   Play,
   Sparkles,
@@ -52,10 +51,24 @@ function App() {
   const [uploading, setUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState('');
   const [lightboxItem, setLightboxItem] = useState<MediaItem | null>(null);
-  const [toast, setToast] = useState('');
 
   useEffect(() => {
     void loadMedia();
+  }, []);
+
+  useEffect(() => {
+    const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.14 });
+
+    revealItems.forEach((item) => observer.observe(item));
+    return () => observer.disconnect();
   }, []);
 
   async function loadMedia(): Promise<void> {
@@ -127,11 +140,6 @@ function App() {
     return supabase.storage.from('portfolio-media').getPublicUrl(item.storage_path).data.publicUrl;
   }
 
-  function showToast(message: string): void {
-    setToast(message);
-    window.setTimeout(() => setToast(''), 2800);
-  }
-
   const featuredMedia = useMemo(() => media.slice(0, 6), [media]);
 
   return (
@@ -139,7 +147,6 @@ function App() {
       <nav className="site-nav" aria-label="Main navigation">
         <a href="#top" className="wordmark" onClick={() => setMenuOpen(false)}>
           <span>FB</span>
-          <small>Portfolio / 2026</small>
         </a>
         <button className="menu-toggle" type="button" aria-label="Toggle navigation" onClick={() => setMenuOpen((open) => !open)}>
           {menuOpen ? <X size={21} /> : <Menu size={21} />}
@@ -168,7 +175,7 @@ function App() {
         <a className="scroll-cue" href="#about"><span>Scroll to explore</span><ChevronDown size={18} /></a>
       </section>
 
-      <section className="about-section section-shell" id="about">
+      <section className="about-section section-shell reveal" data-reveal id="about">
         <div className="section-kicker"><span>01</span><span>My perspective</span></div>
         <div className="about-grid">
           <div className="about-heading"><p className="display-small">Engineering<br /><em>is a mindset.</em></p><div className="line-arrow"><ArrowDownRight size={30} /></div></div>
@@ -185,7 +192,7 @@ function App() {
         <div className="section-shell statement-inner"><span className="quote-mark">“</span><p>How can we make the systems around us more thoughtful, more resilient, and more alive?</p><span className="quote-credit">— Frances</span></div>
       </section>
 
-      <section className="focus-section section-shell" id="focus">
+      <section className="focus-section section-shell reveal" data-reveal id="focus">
         <div className="section-kicker"><span>02</span><span>Where curiosity leads</span></div>
         <div className="focus-header"><p className="display-medium">A wide lens.<br /><em>A clear purpose.</em></p><p className="focus-note">The best ideas often live between disciplines. These are the spaces I keep returning to.</p></div>
         <div className="focus-list">
@@ -193,12 +200,12 @@ function App() {
         </div>
       </section>
 
-      <section className="journey-section section-shell">
+      <section className="journey-section section-shell reveal" data-reveal>
         <div className="section-kicker"><span>03</span><span>In motion</span></div>
         <div className="journey-grid"><p className="display-small">Still becoming<br /><em>the engineer I am.</em></p><div className="journey-list">{journey.map((item) => <div className="journey-item" key={item.year}><span className="journey-year">{item.year}</span><div><span className="journey-label">{item.label}</span><h3>{item.title}</h3><p>{item.detail}</p></div><MoveUpRight size={19} /></div>)}</div></div>
       </section>
 
-      <section className="gallery-section" id="gallery">
+      <section className="gallery-section reveal" data-reveal id="gallery">
         <div className="section-shell">
           <div className="section-kicker light"><span>04</span><span>Life in frames</span></div>
           <div className="gallery-header"><div><p className="display-medium light-text">The work, the joy,<br /><em>the in-between.</em></p><p className="gallery-subtitle">A living collection of the people, places, and moments that shape my journey.</p></div><label className="upload-button"><input type="file" accept="image/*,video/*" multiple onChange={handleUpload} disabled={uploading} />{uploading ? <LoaderCircle className="spin" size={18} /> : <FolderUp size={18} />}<span>{uploading ? 'Adding memories…' : 'Add photos or videos'}</span></label></div>
@@ -207,14 +214,13 @@ function App() {
         </div>
       </section>
 
-      <section className="connect-section section-shell" id="connect">
+      <section className="connect-section section-shell reveal" data-reveal id="connect">
         <div className="connect-top"><div className="section-kicker"><span>05</span><span>Open to possibility</span></div><p className="connect-note">Whether you want to talk engineering, sustainability, design, or the next big question — I&apos;d love to hear from you.</p></div>
-        <div className="connect-bottom"><p className="display-large">Let&apos;s make<br /><em>something matter.</em></p><a className="email-link" href="mailto:frances.braimah@example.com">frances.braimah@example.com <ArrowUpRight size={22} /></a></div>
-        <footer><span>Frances Braimah © 2026</span><span className="footer-center">Built with purpose.</span><div className="social-links"><button type="button" aria-label="LinkedIn" onClick={() => showToast('LinkedIn profile coming soon.') }><Linkedin size={18} /></button><button type="button" aria-label="Instagram" onClick={() => showToast('Instagram profile coming soon.') }><Instagram size={18} /></button><button type="button" aria-label="GitHub" onClick={() => showToast('GitHub profile coming soon.') }><Github size={18} /></button></div></footer>
+        <div className="connect-bottom"><p className="display-large">Let&apos;s make<br /><em>something matter.</em></p><div className="contact-panel"><a className="email-link" href="mailto:fbraimah@ualberta.ca">fbraimah@ualberta.ca <ArrowUpRight size={22} /></a><div className="contact-actions"><a href="https://www.linkedin.com/in/frances-braimah?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noreferrer"><Linkedin size={17} /> LinkedIn</a><a href="https://wa.me/17809947419" target="_blank" rel="noreferrer"><MessageCircle size={17} /> WhatsApp · Canada</a><a href="https://wa.me/233504293473" target="_blank" rel="noreferrer"><MessageCircle size={17} /> WhatsApp · Ghana</a></div></div></div>
+        <footer><span>Frances Braimah © 2026</span><span className="footer-center">Built with purpose.</span><div className="social-links"><a href="https://www.linkedin.com/in/frances-braimah?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={18} /></a><a href="https://wa.me/17809947419" target="_blank" rel="noreferrer" aria-label="WhatsApp Canada"><MessageCircle size={18} /></a><a href="mailto:fbraimah@ualberta.ca" aria-label="Email Frances"><ArrowUpRight size={18} /></a></div></footer>
       </section>
 
       {lightboxItem && <div className="lightbox" role="dialog" aria-modal="true" aria-label="Media viewer" onClick={() => setLightboxItem(null)}><button className="close-lightbox" type="button" aria-label="Close media viewer" onClick={() => setLightboxItem(null)}><X size={22} /></button><div className="lightbox-content" onClick={(event) => event.stopPropagation()}>{lightboxItem.media_type === 'video' ? <video src={publicUrl(lightboxItem)} controls autoPlay /> : <img src={publicUrl(lightboxItem)} alt={lightboxItem.file_name} />}<div className="lightbox-footer"><span>{lightboxItem.file_name}</span><button type="button" onClick={() => void handleDelete(lightboxItem)}><Trash2 size={16} /> Remove</button></div></div></div>}
-      {toast && <div className="toast" role="status"><Check size={15} />{toast}</div>}
     </main>
   );
 }
